@@ -1,24 +1,21 @@
 function [U_final, V_final, nIter_final, objhistory_final] = GNMF_KL(X, k, W, options, U, V)
 % Graph regularized Non-negative Matrix Factorization with Divergence Formulation 
 % Locality Preserving Non-negative Matrix Factorization (LPNMF) Í¼ÕýÔò»¯
-%
-% where
-%   X
-% Notation:
-% X ... (mFea x nSmp) data matrix 
-%       mFea  ... number of words (vocabulary size)
-%       nSmp  ... number of documents
-% k ... number of hidden factors
-% W ... weight matrix of the affinity graph 
-%
-% options ... Structure holding all settings
-%           options.alpha:  manifold regularization prameter (default 100)
-%                           if alpha=0, GNMF_KL boils down to the ordinary
-%                           NMF with KL divergence. Please see [1][2] for details.
-%
-% You only need to provide the above four inputs.
-%
 % X = U*V'
+%
+% Input:
+%   X - (mFea x nSmp) data matrix 
+%       mFea: number of words (vocabulary size)
+%       nSmp: number of documents
+%   k - number of hidden factors
+%   W - weight matrix of the affinity graph 
+%
+%   options - Structure holding all settings
+%           options.alpha: manifold regularization prameter (default 100)
+%                          if alpha=0, GNMF_KL boils down to the ordinary
+%                          NMF with KL divergence. Please see [1][2] for details.
+%
+%   You only need to provide the above four inputs.
 %
 % References:
 % [1] Deng Cai, Xiaofei He, Xuanhui Wang, Hujun Bao, and Jiawei Han.
@@ -29,12 +26,6 @@ function [U_final, V_final, nIter_final, objhistory_final] = GNMF_KL(X, k, W, op
 % Non-negative Matrix Factorization for Data Representation", IEEE
 % Transactions on Pattern Analysis and Machine Intelligence, , Vol. 33, No.
 % 8, pp. 1548-1560, 2011.  
-%
-%
-%
-%   version 3.0 --Jan/2012 
-%   version 2.0 --April/2009 
-%   version 1.0 --April/2008 
 %
 %   Written by Deng Cai (dengcai AT gmail.com)
 %

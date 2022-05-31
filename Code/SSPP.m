@@ -1,6 +1,23 @@
 function [mapselected] = SSPP(HIM,p, mapspc,alfa,beta,sigma,~,thresold)
+% Dine spatial-spectral preprocessing nonnegative matrix factorization algorithm (SSPP)
+% Usage
+%   [mapselected] = SSPP(HIM,p, mapspc,alfa,beta,sigma,~,thresold)
+% Inputs
+%   HIM - RTUD data (NC x NR x T)
+%   P - the number of activity type
+%   mapspc - cluster map (NC x NR)
+%   alfa - percentage of spatial units with high spatial homogeneity
+%   beta - percentage of spatial units with high representativeness
+%   sigma - parameter for Gaussian filter
+%   thresold - parameter for pixel purity index algorithm
+% Outputs
+%   mapselected - Abundance maps (NC x NR)
+% 
+% References
+%   Paper: Spatial-Spectral Preprocessing Prior to Endmember Identification and Unmixing of Remotely Sensed Hyperspectral Data
+
 [nl,ns,nb] = size(HIM);
-%%%%%%% STEP 1 SPATIAL HOMOGENEITY INDEX
+%%%%%%% Step 1: spatial homogeneity index
 h = fspecial('gaussian',15,sigma);
 RMSEHIM(nl,ns) = 0;
 I = imfilter(HIM,h,'symmetric');
@@ -11,10 +28,10 @@ for i = 1:nl
 end
 SpatialIndex = RMSEHIM;
 
-%%%%%% STEP 2 SPECTRAL PURITY INDEX
+%%%%%% Step 2: calcute purity for representativeness
 mapSPI = SPI(HIM,p,thresold);
 
-%%%%%%%% STEP 3
+%%%%%%%% Step 3: select subset with high spatial homogeneity and representativeness
 mapSPIselect = SelectSpectral(mapSPI,mapspc, beta);
 mapSpatialselect = SelectSpatial(SpatialIndex, mapspc, alfa);
 mapselected = (mapSpatialselect == mapSPIselect) .* double(mapspc);
@@ -24,6 +41,7 @@ function [f] = RMSE(h1,h2,nb)
 f=sqrt(sum((h1-h2).^2)/nb);
 end
 
+% function for calculating purith vaule
 function [mapspi] = SPI(HIM,iter,thresold)
 [ns, nl, nb] = size(HIM);
 [pc, ~] = pca(reshape(HIM,ns*nl,nb));
@@ -49,7 +67,7 @@ function [map2] = SelectSpectral(mapSPI, ClusterMap, beta)
 [nl, ns] = size(mapSPI);
 maxclases = max(max(ClusterMap));
 map2(nl,ns) = 0;
-%map2 = zeros(nl,ns,'uint8')+(maxclases+1);%%%%%%%%%
+% map2 = zeros(nl,ns,'uint8')+(maxclases+1);%%%%%%%%%
 for k = 1:maxclases
     data = [0];
     count =1;
@@ -81,7 +99,7 @@ function map2 = SelectSpatial(SpatialIndex, ClusterMap, alfa)
 [nl, ns] = size(SpatialIndex);
 maxclases = max(max(ClusterMap));
 map2(nl,ns) = 0;
-%map2 = zeros(nl,ns,'uint8')+(maxclases+2);%%%%%%%%%
+% map2 = zeros(nl,ns,'uint8')+(maxclases+2);%%%%%%%%%
 for k = 1:maxclases
     data = [0];
     count =1;

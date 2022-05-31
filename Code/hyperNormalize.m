@@ -1,5 +1,4 @@
-function [ normalizedM ] = hyperNormalize( M )
-%HYPERNORMALIZE Normalized data to be in range [0, 1]
+function [normalizedM] = hyperNormalize(M)
 % hyperNormalize Normalizes data to be in range [0, 1]
 %
 % Usage 
@@ -18,5 +17,3 @@ if (maxVal == minVal)
 else
   normalizedM = normalizedM ./ (maxVal-minVal);
 end
-
-%normalizedM=M;

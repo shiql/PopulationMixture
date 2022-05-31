@@ -1,8 +1,13 @@
+% perform popualtion mixture decompostion. 
+% It cantains several steps: 
+%    first prepocess total population’s temporal variation curve by sum sum normalization method;
+%    then decompose the population mixture to obtain  temporal patterns of activities by SSPP-NMF method;
+%    finally estimate dynamic population distributions by activity type
+%
 clear;clc;
-%filename = 'E:\人口分解\PopulationMixture\SampleData\RTUD_Sample.tif';
 filename = '..\SampleData\RTUD_Sample.tif';
 info = geotiffinfo(filename);
-%sum normalization
+%% Step 1: prepocess total population’s curve by sum normalization method
 [rtud, R] = readgeoraster(filename);
 [nrow, ncol,nb] = size(rtud);
 rtudnorm = rtud;
@@ -16,10 +21,11 @@ for i = 1:nrow
     end
 end
 rtud = rtudnorm;
+
+%% Step 2: decompose the population mixture by SSPP-NMF method
 filecluster = '..\SampleData\RTUD_ISODATA.tif';
 [cluster, R1] = readgeoraster(filecluster);
 classnumber = size(unique(cluster),1);
-
 % parameter for SSPP
 actvalue = 3; %the number of activity type
 alfa = 70;
@@ -38,9 +44,10 @@ subset = subset(:,colidx);
 option = [];
 options.maxIter = 100;
 options.alpha = 0;
-[U_final,V_final,nIter_final,objhistory_final] = GNMF_KL(subset,actvalue,[],options); %GNMF_KL,此处执行的是标准nmf+KL散度度量方法
+[U_final,V_final,nIter_final,objhistory_final] = GNMF_KL(subset,actvalue,[],options); %GNMF_KL,perform graph regularized non-negative matrix Factorization with divergence formulation
 plot(U_final);
 
+%% Step 3: estimate dynamic population distributions by activity type
 % activity weight paramter by constrained linear least-squares
 rtudmatrix2 = rtudmatrix.';
 weightMaps2 = hyperNnls(rtudmatrix2, U_final);
@@ -55,7 +62,7 @@ for j=1:nSmp
         weightMaps2nor(:,j) = weightMaps2nor(:,j)/(sum(weightMaps2nor(:,j)));
     end
 end
-%weightMap for 3d
+% weightMap for 3d
 weightMaps2nor3d = reshape(weightMaps2nor.', nrow, ncol, actvalue);
 
 % Calculate population size for each activity

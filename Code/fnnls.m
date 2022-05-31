@@ -1,7 +1,4 @@
 function [x,w] = fnnls(XtX,Xty,tol)
-%FNNLS	Non-negative least-squares.
-%
-% 	Adapted from NNLS of Mathworks, Inc.
 %
 %	x = fnnls(XtX,Xty) returns the vector X that solves x = pinv(XtX)*Xty
 %	in a least squares sense, subject to x >= 0.

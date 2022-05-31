@@ -1,12 +1,8 @@
 function [ X ] = hyperNnls( M, U )
-%HYPERNNLS Performs non-negative constrained least squares on pixels of M.
-%   hyperFcls performs non-negative constrained least squares of each pixel 
-% in M using the endmember signatures of U.  Non-negative constrained least 
-% squares with the abundance nonnegative constraint (ANC).
-% Utilizes the method of Bro.
+% HYPERNNLS Performs non-negative constrained least squares on pixels of M.
 %
 % Usage
-%   [ X ] = hyperNnls( M, U )
+%   [X] = hyperNnls(M, U)
 % Inputs
 %   M - HSI data matrix (p x N)
 %   U - Matrix of endmembers (p x q)
